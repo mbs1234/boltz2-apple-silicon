@@ -12,17 +12,35 @@ on a fixed set of 9 kinase-domain + inhibitor complexes (~300 residues), 5 diffu
 
 ## Results
 
+The optimizations were developed against stock boltz 2.2.1 and then **re-verified on the patched
+code**, which is what the Usage section below builds. Both sets of numbers are given, because
+they are measured against different baselines and the two are easy to confuse.
+
+**Patched code (`patches/` applied) — the configuration this repo ships:**
+
+| Mode | Wall clock, 9 complexes | vs. patched stock | vs. stock 2.2.1 |
+|---|---:|---:|---:|
+| Patched stock, one process per job | 929.0 s | — | — |
+| **Single-job mode** (`boltz_nw0_exact.py`) | **687.6 s** | **−26.0%** | −27.4% |
+| **Batch mode** (`serve_batch.py`) | **585.9 s** | **−36.9%** | −38.1% |
+
+These are the reference timings `scripts/validate_node.sh` checks against.
+
+**Stock boltz 2.2.1, for comparison** — the baseline the optimizations were first measured on:
+
 | Mode | Wall clock, 9 complexes | vs. stock |
 |---|---:|---:|
 | Stock `boltz predict`, one process per job | 946.6 s | — |
-| **Single-job mode** (`boltz_nw0_exact.py`) | **682.8 s** | **−27.9%** |
-| **Batch mode** (`serve_batch.py`) | **582.9 s** | **−38.4%** |
+| Single-job mode | 682.8 s | −27.9% |
+| Batch mode | 582.9 s | −38.4% |
 
-Every accepted change reproduces the reference archive **bit-for-bit**: 45/45 structures and
+Every accepted change reproduces its reference archive **bit-for-bit**: 45/45 structures and
 135/135 pLDDT/PAE/PDE arrays, maximum ligand pocket RMSD 0.000 Å, maximum confidence delta 0.0000.
+The optimizations were verified bit-exact on stock 2.2.1, on the patched code, and on the
+boltz-community fork independently.
 
-Re-verified independently on two further M1 Ultra machines: single-job 677 s on both, batch
-570 s and 571 s, each 45/45 and 135/135 bit-identical.
+Re-verified on two further M1 Ultra machines: single-job 677 s on both, batch 570 s and 571 s,
+each 45/45 and 135/135 bit-identical to the patched-code archive.
 
 ## The rule this work is built on
 
@@ -34,6 +52,10 @@ rejected, not tuned until it passes.
 That bar is what makes the rejected list below as useful as the accepted one.
 
 ## What made it faster
+
+Percentages in this section are measured against **stock boltz 2.2.1** (946.6 s), the baseline
+each optimization was developed on. The patched-code totals above are the same optimizations
+re-verified on the patched source.
 
 ### 1. Dataloader workers removed, with the worker RNG reproduced exactly (−15.0%)
 
