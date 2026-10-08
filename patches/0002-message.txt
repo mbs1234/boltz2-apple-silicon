@@ -1,0 +1,11 @@
+Augment the last reference-conformer group too
+
+center_random_augmentation was applied for i in range(max(ref_space_uid)),
+skipping the last group. ref_space_uid is 0..max inclusive, so in a
+protein + ligand input the ligand's reference conformer was never
+roto-translated. Iterate range(max + 1).
+
+Changes ligand inputs (and the CPU RNG stream) and therefore results.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+

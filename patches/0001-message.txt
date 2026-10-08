@@ -1,0 +1,13 @@
+Fix MPS precision claim and --subsample_msa flag
+
+- On Apple MPS, Lightning 2.5 builds bf16 autocast for device 'cuda', so
+  'bf16-mixed' was logged but never applied; inference already ran fp32.
+  Select precision=32 explicitly on MPS and say so.
+- --subsample_msa was a bare flag whose help claimed 'Default is True' while
+  it was off (upstream #628). Make it --subsample_msa/--no_subsample_msa with
+  the effective default (off) kept and truthful help text.
+
+Neither change alters numerics with default arguments.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
